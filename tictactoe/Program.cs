@@ -191,39 +191,16 @@ class Tile
 
 class Program
 {
-
-    public static bool isGameOver(List<List<Tile>> boardState, bool isXTurn)
+    public static bool isGameOver = false;
+    public static bool checkIsGameOver(List<List<Tile>> boardState, bool isXTurn)
     {
 
-        Console.WriteLine("checking for win...");
-        Console.WriteLine("x turn:" + isXTurn);
+       // Console.WriteLine("checking for win...");
+       // Console.WriteLine("x turn:" + isXTurn);
 
 
 
-        //print the board
-        Console.WriteLine();
-        Console.WriteLine(" 123");
-        for (int i = 0; i < 3; i++)
-        {
-            if (i == 0)
-            {
-                Console.Write("a");
-            }
-            else if (i == 1)
-            {
-                Console.Write("b");
-            }
-            else if (i == 2)
-            {
-                Console.Write("c");
-            }
-
-            for (int j = 0; j < 3; j++)
-            {
-                boardState[i][j].PrintValues();
-            }
-            Console.WriteLine();
-        }
+       
 
 
 
@@ -238,6 +215,33 @@ class Program
                         if (tile.CanWin())
                         {
                             Console.WriteLine("X has won!");
+                            //print the board
+                            Console.WriteLine();
+                            Console.WriteLine(" 123");
+                            for (int i = 0; i < 3; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    Console.Write("a");
+                                }
+                                else if (i == 1)
+                                {
+                                    Console.Write("b");
+                                }
+                                else if (i == 2)
+                                {
+                                    Console.Write("c");
+                                }
+
+                                for (int j = 0; j < 3; j++)
+                                {
+                                    boardState[i][j].PrintValues();
+                                }
+                                Console.WriteLine();
+                            }
+
+
+                            isGameOver = true;
                             return true;
                         }
                     }
@@ -255,6 +259,31 @@ class Program
                         if (tile.CanWin())
                         {
                             Console.WriteLine("O has won!");
+                            //print the board
+                            Console.WriteLine();
+                            Console.WriteLine(" 123");
+                            for (int i = 0; i < 3; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    Console.Write("a");
+                                }
+                                else if (i == 1)
+                                {
+                                    Console.Write("b");
+                                }
+                                else if (i == 2)
+                                {
+                                    Console.Write("c");
+                                }
+
+                                for (int j = 0; j < 3; j++)
+                                {
+                                    boardState[i][j].PrintValues();
+                                }
+                                Console.WriteLine();
+                            }
+                            isGameOver = true;
                             return true;
                         }
                     }
@@ -265,11 +294,11 @@ class Program
 
         return false;
     }
-    public static List<List<Tile>> miniMax(List<List<Tile>> currentBoard, int depth, bool maximize)
+    public static List<List<Tile>> miniMax(List<List<Tile>> currentBoard, int depth, bool maximize, int a, int b)
     {
-        if (depth == 0 || isGameOver(currentBoard, maximize))
+        if (depth == 0 || isGameOver)
         {
-
+                
             return currentBoard;
         }
 
@@ -301,9 +330,9 @@ class Program
                     }
 
                     ///calculate adjacents for new board
-                    foreach (var b in newBoard)
+                    foreach (var row in newBoard)
                     {
-                        foreach (var tile in b)
+                        foreach (var tile in row)
                         {
                             tile.CalculateAdjacents(3, newBoard);
                         }
@@ -317,21 +346,34 @@ class Program
                     {
                         newBoard[i][j].value = "X";
 
-                        int x = getBoardScore(maxBoardState, true);
 
-                        int y = getBoardScore(miniMax(newBoard, depth - 1, false), true);
+                        //int x = getBoardScore(maxBoardState, true);
 
-                        if (y > x)
+                        int boardScore = getBoardScore(miniMax(newBoard, depth - 1, false, a, b), true);
+
+                        if(boardScore > a)
                         {
+                            a = boardScore;
                             maxBoardState = newBoard;
                         }
+                       
+                        if(a >= b)
+                        {
+                            break;
+                        }
 
-                        //set it back to - after we are done
                     }
+                }
+
+                if(a >= b)
+                {
+                    break;
                 }
             }
 
-            Console.WriteLine("State:");
+            
+
+            Console.WriteLine("Max State:");
             Console.WriteLine(" 123");
             for (int i = 0; i < 3; i++)
             {
@@ -386,9 +428,9 @@ class Program
                     }
 
                     ///calculate adjacents for new board
-                    foreach (var b in newBoard)
+                    foreach (var row in newBoard)
                     {
-                        foreach (var tile in b)
+                        foreach (var tile in row)
                         {
                             tile.CalculateAdjacents(3, newBoard);
                         }
@@ -400,17 +442,24 @@ class Program
                     {
                         newBoard[i][j].value = "O";
 
-                        int x = getBoardScore(minBoardState, false);
+                     
+                        int boardScore = getBoardScore(miniMax(newBoard, depth - 1, true, a, b), false);
 
-                        int y = getBoardScore(miniMax(newBoard, depth - 1, true), false);
-
-                        if (y < x)
+                        if (boardScore < b)
                         {
+                            b = boardScore;
                             minBoardState = newBoard;
                         }
 
-                        //set it back to - after we are done
+                        if(a >= b)
+                        {
+                            break;
+                        }
                     }
+                }
+                if(a >= b)
+                {
+                    break;
                 }
             }
             Console.WriteLine("State:");
@@ -534,10 +583,11 @@ class Program
 
     public static void Main(string[] args)
     {
+        int alpha = int.MinValue;
+        int beta = int.MaxValue;
         int depth = 8;
         bool isXTurn = true;
         List<List<Tile>> board = new List<List<Tile>>();
-        bool gameOver = false;
         int boardSize = 3;
         int count = 0;
         for (int i = 0; i < boardSize; i++)
@@ -555,7 +605,7 @@ class Program
             board.Add(tempList);
         }
 
-
+/*
         for (int i = 0; i < boardSize; i++)
         {
             for (int j = 0; j < boardSize; j++)
@@ -567,10 +617,10 @@ class Program
                 tile.PrintAdjacent();
                 Console.WriteLine();
             }
-        }
+        }*/
 
 
-        while (!isGameOver(board, isXTurn))
+        while (!isGameOver)
         {
 
             Console.WriteLine("Tic Tac Toe:");
@@ -601,13 +651,13 @@ class Program
 
             if (input == "q")
             {
-                gameOver = true;
+                isGameOver = true;
                 Console.WriteLine("Quitting");
             }
             else if (input == "m")
             {
                 Console.WriteLine("Minimax!");
-                board = miniMax(board, depth, isXTurn);
+                board = miniMax(board, depth, isXTurn, alpha, beta);
 
                 for (int i = 0; i < boardSize; i++)
                 {
