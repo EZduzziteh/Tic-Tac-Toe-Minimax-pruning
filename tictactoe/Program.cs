@@ -194,16 +194,6 @@ class Program
     public static bool isGameOver = false;
     public static bool checkIsGameOver(List<List<Tile>> boardState, bool isXTurn)
     {
-
-       // Console.WriteLine("checking for win...");
-       // Console.WriteLine("x turn:" + isXTurn);
-
-
-
-       
-
-
-
         if (!isXTurn)
         {
             foreach (List<Tile> row in boardState)
@@ -215,32 +205,7 @@ class Program
                         if (tile.CanWin())
                         {
                             Console.WriteLine("X has won!");
-                            //print the board
-                            Console.WriteLine();
-                            Console.WriteLine(" 123");
-                            for (int i = 0; i < 3; i++)
-                            {
-                                if (i == 0)
-                                {
-                                    Console.Write("a");
-                                }
-                                else if (i == 1)
-                                {
-                                    Console.Write("b");
-                                }
-                                else if (i == 2)
-                                {
-                                    Console.Write("c");
-                                }
-
-                                for (int j = 0; j < 3; j++)
-                                {
-                                    boardState[i][j].PrintValues();
-                                }
-                                Console.WriteLine();
-                            }
-
-
+                          
                             isGameOver = true;
                             return true;
                         }
@@ -259,30 +224,7 @@ class Program
                         if (tile.CanWin())
                         {
                             Console.WriteLine("O has won!");
-                            //print the board
-                            Console.WriteLine();
-                            Console.WriteLine(" 123");
-                            for (int i = 0; i < 3; i++)
-                            {
-                                if (i == 0)
-                                {
-                                    Console.Write("a");
-                                }
-                                else if (i == 1)
-                                {
-                                    Console.Write("b");
-                                }
-                                else if (i == 2)
-                                {
-                                    Console.Write("c");
-                                }
-
-                                for (int j = 0; j < 3; j++)
-                                {
-                                    boardState[i][j].PrintValues();
-                                }
-                                Console.WriteLine();
-                            }
+                            
                             isGameOver = true;
                             return true;
                         }
@@ -370,33 +312,36 @@ class Program
                     break;
                 }
             }
-
-            
-
-            Console.WriteLine("Max State:");
-            Console.WriteLine(" 123");
-            for (int i = 0; i < 3; i++)
+            if(!isGameOver)
+            if(checkIsGameOver(maxBoardState, maximize))
             {
-                if (i == 0)
-                {
-                    Console.Write("a");
-                }
-                else if (i == 1)
-                {
-                    Console.Write("b");
-                }
-                else if (i == 2)
-                {
-                    Console.Write("c");
+                    Console.WriteLine("Max State:");
+                    Console.WriteLine(" 123");
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (i == 0)
+                        {
+                            Console.Write("a");
+                        }
+                        else if (i == 1)
+                        {
+                            Console.Write("b");
+                        }
+                        else if (i == 2)
+                        {
+                            Console.Write("c");
+                        }
+
+                        for (int j = 0; j < 3; j++)
+                        {
+                            maxBoardState[i][j].PrintValues();
+                        }
+                        Console.WriteLine();
+                    }
+                    Console.WriteLine();
+
                 }
 
-                for (int j = 0; j < 3; j++)
-                {
-                    maxBoardState[i][j].PrintValues();
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine();
 
             return maxBoardState;
         }
@@ -462,30 +407,38 @@ class Program
                     break;
                 }
             }
-            Console.WriteLine("State:");
-            Console.WriteLine(" 123");
-            for (int i = 0; i < 3; i++)
-            {
-                if (i == 0)
-                {
-                    Console.Write("a");
-                }
-                else if (i == 1)
-                {
-                    Console.Write("b");
-                }
-                else if (i == 2)
-                {
-                    Console.Write("c");
-                }
 
-                for (int j = 0; j < 3; j++)
+            if (!isGameOver)
+            {
+                if (checkIsGameOver(minBoardState, maximize))
                 {
-                    minBoardState[i][j].PrintValues();
+                    Console.WriteLine("Min State:");
+                    Console.WriteLine(" 123");
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (i == 0)
+                        {
+                            Console.Write("a");
+                        }
+                        else if (i == 1)
+                        {
+                            Console.Write("b");
+                        }
+                        else if (i == 2)
+                        {
+                            Console.Write("c");
+                        }
+
+                        for (int j = 0; j < 3; j++)
+                        {
+                            minBoardState[i][j].PrintValues();
+                        }
+                        Console.WriteLine();
+                    }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
             }
-            Console.WriteLine();
+            
             return minBoardState;
 
 
@@ -538,6 +491,7 @@ class Program
         //if no immediate win, 
 
 
+        //thoughts for expansion
         
 
         /*
@@ -548,10 +502,6 @@ class Program
             //check if there is a way x can make a set
 
        
-
-
-
-
             //if there is, +100 points
 
             //if there isn't, check if there is a way that O can make a set
@@ -605,20 +555,11 @@ class Program
             board.Add(tempList);
         }
 
-/*
-        for (int i = 0; i < boardSize; i++)
-        {
-            for (int j = 0; j < boardSize; j++)
-            {
-                board[i][j].CalculateAdjacents(boardSize, board);
-                Tile tile = board[i][j];
-                Console.WriteLine("coordinates: "+tile.x+", "+tile.y);
-                Console.WriteLine(board[i][j].value);
-                tile.PrintAdjacent();
-                Console.WriteLine();
-            }
-        }*/
 
+        Console.WriteLine("Welcome to Tic Tac Toe minimax with alpha beta pruning by Sasha Greene");
+        Console.WriteLine("Enter 2 characters to place your mark in this format: a1 to place a mark (starts with X)");
+        Console.WriteLine("Enter m to run minimax from whatever the current board state is and find the first victory state");
+        Console.WriteLine("Enter q to quit");
 
         while (!isGameOver)
         {
